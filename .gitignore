@@ -1,7 +1,6 @@
 #.NET Core Project
 bin
 obj
-ProAgil.db
 
 # compiled output
 /dist
