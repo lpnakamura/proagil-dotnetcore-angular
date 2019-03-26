@@ -8,7 +8,7 @@ obj
 /out-tsc
 
 # dependencies
-/node_modules
+ProAgil-App/node_modules
 
 # IDEs and editors
 /.idea
