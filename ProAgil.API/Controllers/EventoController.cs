@@ -23,12 +23,12 @@ namespace ProAgil.API.Controllers
         {
             try
             {
-                var results = await _repo.GetAllEventoAsync(true);
+                var results = await _repo.GetAllEventoAsync(false);
                 return Ok(results);
             }
-            catch (System.Exception)
+            catch (System.Exception e)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError,"Falha no Banco de Dados");
+                return StatusCode(StatusCodes.Status500InternalServerError,"Falha no Banco de Dados:" + e.Message);
             }
         }
 
