@@ -1,7 +1,9 @@
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ProAgil.API.Dtos;
 using ProAgil.Domain;
 using ProAgil.Repository;
 
@@ -12,9 +14,11 @@ namespace ProAgil.API.Controllers
     public class EventoController : ControllerBase
     {
         private readonly IProAgilRepository _repo;
+        private readonly IMapper _mapper;
 
-        public EventoController(IProAgilRepository repo)
+        public EventoController(IProAgilRepository repo, IMapper mapper)
         {
+            _mapper = mapper;
             _repo = repo;
         }
 
@@ -23,12 +27,14 @@ namespace ProAgil.API.Controllers
         {
             try
             {
-                var results = await _repo.GetAllEventoAsync(false);
+                var eventos = await _repo.GetAllEventoAsync(false);
+                var results = _mapper.Map<EventoDto[]>(eventos);
+
                 return Ok(results);
             }
             catch (System.Exception e)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError,"Falha no Banco de Dados:" + e.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Falha no Banco de Dados:" + e.Message);
             }
         }
 
@@ -37,67 +43,76 @@ namespace ProAgil.API.Controllers
         {
             try
             {
-                var results = await _repo.GetAllEventoAsyncById(id,true);
+                var evento = await _repo.GetAllEventoAsyncById(id);
+                var results = _mapper.Map<EventoDto>(evento);
+
                 return Ok(results);
             }
             catch (System.Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError,"Falha no Banco de Dados");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Falha no Banco de Dados");
             }
         }
 
-        
+
         [HttpGet("getByTema/{tema}")]
         public async Task<IActionResult> Get(string tema)
         {
             try
             {
-                var results = await _repo.GetAllEventoAsyncByTema(tema,true);
+                var eventos = await _repo.GetAllEventoAsyncByTema(tema);
+                var results = _mapper.Map<EventoDto[]>(eventos);
+
                 return Ok(results);
             }
             catch (System.Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError,"Falha no Banco de Dados");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Falha no Banco de Dados");
             }
         }
 
         // POST api/values
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Evento model)
+        public async Task<IActionResult> Post([FromBody] EventoDto eventoDto)
         {
             try
             {
+                var model = _mapper.Map<Evento>(eventoDto);
+
                 _repo.Add(model);
-                if(await _repo.SaveChangesAsync())
-                    return Ok(model);
+
+                if (await _repo.SaveChangesAsync())
+                    return Ok(_mapper.Map<EventoDto>(model));
 
                 return BadRequest();
             }
             catch (System.Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError,"Falha no Banco de Dados");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Falha no Banco de Dados");
             }
         }
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] Evento model)
+        public async Task<IActionResult> Put(int id, [FromBody] EventoDto model)
         {
             try
             {
                 var evento = await _repo.GetAllEventoAsyncById(id);
-                if(evento == null) return NotFound();
+                if (evento == null) return NotFound();
 
-                _repo.Update(model);
+                _mapper.Map(model, evento);
 
-                if(await _repo.SaveChangesAsync())
-                    return Ok(model);
+                _repo.Update(evento);
+
+                if (await _repo.SaveChangesAsync())
+                    return Ok(_mapper.Map<EventoDto>(evento));
 
                 return BadRequest();
             }
             catch (System.Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError,"Falha no Banco de Dados");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Falha no Banco de Dados");
             }
         }
 
@@ -107,19 +122,19 @@ namespace ProAgil.API.Controllers
         {
             try
             {
-            var model = await _repo.GetAllEventoAsyncById(id);
-                if(model == null) return NotFound();
+                var model = await _repo.GetAllEventoAsyncById(id);
+                if (model == null) return NotFound();
 
                 _repo.Delete(model);
-                
-                if(await _repo.SaveChangesAsync())
+
+                if (await _repo.SaveChangesAsync())
                     return Ok();
 
                 return BadRequest();
             }
             catch (System.Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError,"Falha no Banco de Dados");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Falha no Banco de Dados");
             }
         }
     }
