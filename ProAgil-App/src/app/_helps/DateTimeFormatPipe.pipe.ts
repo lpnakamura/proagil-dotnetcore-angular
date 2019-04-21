@@ -5,6 +5,6 @@ import { Constants } from '../util/Constants';
 @Pipe({name: 'DateTimeFormatPipe'})
 export class DateTimeFormatPipePipe extends DatePipe implements PipeTransform {
     transform(value: any): any {
-        return super.transform(value,Constants.DATE_TIME_FMT);
+        return super.transform(value, Constants.DATE_TIME_FMT);
     }
 }

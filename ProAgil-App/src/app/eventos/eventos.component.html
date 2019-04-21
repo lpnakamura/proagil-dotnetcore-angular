@@ -1,3 +1,4 @@
+<app-titulo [titulo]="titulo"></app-titulo>
 <div class="d-flex">
   <div class="form-inline mr-auto">
     <div class="form-group mb-2">
@@ -5,7 +6,7 @@
     </div>
   </div>
   <div>
-    <button class="btn btn-outline-primary" (click)="openModal(template)"><i class="fa fa-plus-circle"></i>&nbsp; Novo Evento</button>
+    <button class="btn btn-outline-primary" (click)="novoEvento(template)"><i class="fa fa-plus-circle"></i>&nbsp; Novo Evento</button>
   </div>
 </div>
 
@@ -27,15 +28,15 @@
   <tbody *ngIf="eventosFiltrados && eventosFiltrados.length">
     <tr *ngFor="let evento of eventosFiltrados">
       <td>
-        <img src="http://localhost:5000/img/{{evento.imagemUrl ? evento.imagemUrl : 'notfound.jpg'}}" alt="" 
-        [style.width.px]="imagemLargura" 
+        <img src="http://localhost:5000/img/{{evento.imagemUrl ? evento.imagemUrl : 'notfound.jpg'}}" alt=""
+        [style.width.px]="imagemLargura"
         [style.margin.px]="imagemMargem"
-        *ngIf="mostrarImagem"> 
+        *ngIf="mostrarImagem">
       </td>
       <td>{{evento.id}}</td>
       <td>{{evento.tema}}</td>
       <td>{{evento.local}}</td>
-      <td>{{evento.dataEvento | DateTimeFormatPipe}}</td>
+      <td>{{evento.dataEvento}}</td>
       <td>{{evento.qtdPessoa}}</td>
       <td>1º Lote</td>
       <td>
@@ -57,7 +58,7 @@
       </td>
     </tr>
   </tfoot>
-</table> 
+</table>
 
 <div bsModal #template="bs-modal" class="modal fade" tabindex="-1"
 role="dialog" aria-labelledby="dialog-sizes-name1">
@@ -80,7 +81,7 @@ role="dialog" aria-labelledby="dialog-sizes-name1">
             <div class="invalid-feedback" *ngIf="registerForm.get('tema').hasError('minlength')">Tema deve ter no mínimo 4 caracteres</div>
             <div class="invalid-feedback" *ngIf="registerForm.get('tema').hasError('maxlength')">Tema deve ter no máximo 50 caracteres</div>
           </div>
-        </div>  
+        </div>
         <div class="form-row">
           <div class="form-group col-md-8">
             <label>Local</label>
@@ -94,7 +95,7 @@ role="dialog" aria-labelledby="dialog-sizes-name1">
             && registerForm.get('dataEvento').touched}" formControlName="dataEvento" placeholder="Insira a Data">
             <div class="invalid-feedback">Data é obrigatório</div>
           </div>
-        </div>  
+        </div>
         <div class="form-row">
           <div class="form-group col-md-3">
             <label>Qtd Pessoas</label>
@@ -109,7 +110,7 @@ role="dialog" aria-labelledby="dialog-sizes-name1">
             && registerForm.get('imagemUrl').touched}" formControlName="imagemUrl" placeholder="Insira a Imagem">
             <div class="invalid-feedback">Imagem é obrigatório</div>
           </div>
-        </div>  
+        </div>
         <div class="form-row">
           <div class="form-group col-md-8">
             <label>Telefone</label>
@@ -124,7 +125,7 @@ role="dialog" aria-labelledby="dialog-sizes-name1">
             <div class="invalid-feedback" *ngIf="registerForm.get('email').hasError('required')">Email é obrigatório</div>
             <div class="invalid-feedback" *ngIf="registerForm.get('email').hasError('email')">Email é inválido</div>
           </div>
-        </div> 
+        </div>
       </form>
     </div>
     <div class="modal-footer d-flex">
@@ -148,8 +149,8 @@ role="dialog" aria-labelledby="dialog-sizes-name1">
     		</div>
     		<div class="modal-body">
       			<p>{{bodyDeletarEvento}}</p>
-    		</div>    
-    		<div class="modal-footer btn-group d-flex">      
+    		</div>
+    		<div class="modal-footer btn-group d-flex">
       			<button type="button" class="btn btn-outline-primary" (click)="confirm.hide()">
         			Cancelar
       			</button>
